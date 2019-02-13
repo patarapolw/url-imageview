@@ -1,37 +1,21 @@
+import Viewer from "viewerjs";
 import $ from "jquery";
 
-import Viewer from "./views/Viewer";
-import Editor from "./views/Editor";
-
-import containerTpl from "./templates/container.html";
-import viewerTpl from "./templates/viewer.html";
-import editorTpl from "./templates/editor.html";
-
-import "bootstrap/dist/css/bootstrap.min.css";
+import urlList from "./urlList.txt";
+import "viewerjs/dist/viewer.css";
 import "./index.css";
 
-let currentTab: "viewer" | "editor" = "viewer";
+(() => {
+    const mainArea = document.getElementById("App") as HTMLDivElement;
+    const $mainArea = $(mainArea);
+    urlList.trim().split("\n").forEach((url: any) => {
+        const $img = $(`
+            <div class="thumbnail-wrapper">
+                <img class="thumbnail uncaptioned" src="${url}" alt="${
+                    /([^/]+)$/.exec(url)![1]}">
+            </div>`);
+        $mainArea.append($img);
+    });
 
-$("body").html(containerTpl);
-
-document.getElementById("viewer-link")!.onclick = () => {
-    $(".nav-link").removeClass("active");
-    $("#viewer-link").addClass("active");
-
-    $("#mainArea").html(viewerTpl);
-    currentTab = "viewer";
-
-    Viewer();
-};
-
-document.getElementById("editor-link")!.onclick = () => {
-    $(".nav-link").removeClass("active");
-    $("#editor-link").addClass("active");
-
-    $("#mainArea").html(editorTpl);
-    currentTab = "editor";
-
-    Editor();
-};
-
-document.getElementById("viewer-link")!.click();
+    const gallery = new Viewer(mainArea);
+})();
